@@ -19,7 +19,7 @@ app.use(cors({
   // Adding "set-cookie" to this list did not work.
 }));
 
-const uri = "mongodb+srv://Uwaish55:Uwaish55@cluster0-uujh1.azure.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb+srv://YOUR_ID:YOUR_PASSWORD@cluster0-uujh1.azure.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }
 );
 const connection = mongoose.connection;
