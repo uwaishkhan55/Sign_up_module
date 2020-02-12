@@ -10,10 +10,13 @@ class register extends Component {
 
     this.onSubmit=this.onSubmit.bind(this)
     this.state = {
+      loading:false,
       email: '',
       password: '',
       username: null,
-      location:''
+      location:'',
+      errorMessage:null,
+      image:false
     }
     
   }
@@ -62,33 +65,59 @@ class register extends Component {
       username: this.state.username,
       email: this.state.email,
       password: this.state.password,
-      location: this.state.location
+      location: this.state.location,
+      image:this.state.image
     }
 
-    alert(exercise.username);
-
     axios.post('/register/', exercise)
-      .then(res => localStorage.setItem('token', res.data.token),
-      setTimeout(function (){
-        
-        window.location='/verification'
-      
-      }, 2000)
-            
-      );
-    
-      
-    
+    .then(
    
+      (response) =>  {localStorage.setItem('token', response.data.token)
+       window.location='/verification' },
+      (error)=>{  this.setState({errorMessage:"Email already exists !!"+error})  }
+          
+    );
+     
   }
 
 
+
+
+   uploadImage = async e => {
+    const files = e.target.files
+    const data = new FormData()
+    data.append('file', files[0])
+    data.append('upload_preset', 'ml_default')
+    this.setState({loading:true})
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/uwaish55/image/upload',
+      {
+        method: 'POST',
+        body: data
+      })
+    const file = await res.json()
+   this.setState({image:file.url,loading:false})
+   
+  }
+
+  
   render() {
     return (
      
-  <div style={{width: "50%",margin:" 0 auto"}} className="container">
-     <p>Sign in</p>
-       <form    onSubmit={this.onSubmit}>
+  <div  className="container">
+     <p>Sign Up</p>
+
+
+     
+
+
+    <div className="container">
+  <div className="row">
+    <div className="col">
+    <form    onSubmit={this.onSubmit}>
+       {(this.state.errorMessage)?<div style={{fontSize:"15px"}}class="alert alert-danger" role="alert">
+  {this.state.errorMessage}
+</div>:""}
        <div className="form-group">
      
        <input required
@@ -108,7 +137,7 @@ class register extends Component {
       onChange={this.onChangepassword}
   type="password"  className="form-control" id="psw" name="psw" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters"  required/>
          </div>
-    <label className="sr-only" for="inlineFormInputName2">Name</label>
+    <label className="sr-only" htmlFor="inlineFormInputName2">Name</label>
   <input type="text" className="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Full Name"
     value={this.state.username}
     onChange={this.onChangeusername} 
@@ -134,6 +163,23 @@ class register extends Component {
       
       
     </form>   
+    </div>
+    <div className="col">
+    <p>Add Profile Pic</p>
+      <input
+        type="file"
+        name="file"
+        onChange={this.uploadImage}
+      />
+      {(this.state.loading) ? (  <h3>Loading....</h3> ) : ""}
+      {(this.state.image)?<img src={this.state.image}  style={{ width:"200px" , height:"250px"}} />:""}
+     
+      
+    </div>
+    
+  </div>
+</div>
+      
                    
 </div>
 
