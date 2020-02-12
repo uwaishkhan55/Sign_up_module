@@ -8,7 +8,8 @@ const registerSchema = new Schema({
   location: { type: String, required: true },
   username: { type: String, required: true },
   interest: { type:Object, required: true },
-  isVerified:{type:Boolean,default:false}
+  isVerified:{type:Boolean,default:false},
+   image:{type : String}
 }, {
   timestamps: true,
 });
